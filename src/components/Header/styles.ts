@@ -3,7 +3,7 @@ import styled from "styled-components";
 
 export const StyledHeader = styled(Header)`
   height: 5vh !important;
-  background: #eee6e2;  
+  background: ${({ theme }) => theme.colors.background};  
 `;
 
 export const Row = styled.div`
@@ -22,7 +22,7 @@ export const TitleContainer = styled.div`
 export const Title = styled.div`
   font-size: 24px;
   font-weight: 600;
-  color: #3f3f3f;
+  color: ${({ theme }) => theme.colors.text};
   &:hover {
     font-size: 26px;
     transition: 200ms ease-in-out;
@@ -31,7 +31,7 @@ export const Title = styled.div`
 
 export const Icon = styled.div`
   font-size: 32px;
-  color: #fe6900;
+  color: ${({ theme }) => theme.colors.primary};
 `;
 
 export const NavContainer = styled.div`
@@ -42,13 +42,13 @@ export const NavContainer = styled.div`
 
 export const NavDivider = styled.div`
     font-size: 24px;
-    color: #3f3f3f;
+    color: ${({ theme }) => theme.colors.text};
 `;
 
 export const NavContent = styled.div`
   font-size: 18px;
   font-weight: 500;
-  color: #3f3f3f;
+  color: ${({ theme }) => theme.colors.text};
   cursor: pointer;
 
   &:hover {

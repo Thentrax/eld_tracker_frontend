@@ -3,24 +3,17 @@ import ReactDOM from 'react-dom/client';
 import './index.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
-import { Layout } from 'antd';
-import { Content, Footer } from 'antd/es/layout/layout';
-import Header from './components/Header';
+import { ThemeProvider } from 'styled-components';
+import { theme } from './styles/theme';
 
 const root = ReactDOM.createRoot(
   document.getElementById('root') as HTMLElement
 );
 root.render(
   <React.StrictMode>
-      <Layout>
-        <Header />
-        <Content style={{ height: '90vh'}}>
-          <App />
-        </Content>
-        <Footer style={{ height: '5vh'}}>
-          Footer
-        </Footer>
-    </Layout>
+    <ThemeProvider theme={theme}>
+      <App />
+    </ThemeProvider>
   </React.StrictMode>
 );
 
