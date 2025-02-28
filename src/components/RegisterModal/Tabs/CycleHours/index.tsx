@@ -1,4 +1,4 @@
-import React, { useState, useCallback } from 'react';
+import React, { useState, useCallback, useEffect } from 'react';
 import { Form, Input, Select } from 'antd';
 import { MapContainer, TileLayer, Marker, useMapEvents } from 'react-leaflet';
 import Button from '../../../Button';
@@ -6,24 +6,14 @@ import 'leaflet/dist/leaflet.css';
 import * as L from 'leaflet';
 import * as S from '../../styles';
 import { getAddress } from '../../../../Helpers/geoUtils';
+import { Log } from '../../../../Models/Log';
+import { CycleHours } from '../../../../Models/CycleHours';
 
-// Importações necessárias para o Leaflet funcionar corretamente
 L.Icon.Default.mergeOptions({
   iconRetinaUrl: require('leaflet/dist/images/marker-icon-2x.png'),
   iconUrl: require('leaflet/dist/images/marker-icon.png'),
   shadowUrl: require('leaflet/dist/images/marker-shadow.png'),
 });
-
-// Interface do CycleHours
-export interface CycleHours {
-  id: number;
-  log_id: number;
-  status: 'Off Duty' | 'Sleeper Berth' | 'Driving' | 'On Duty Not Driving';
-  annotations?: string;
-  start_location: { lat: number; lng: number };
-  end_location: { lat: number; lng: number };
-  distance: number;
-}
 
 interface ModalCycleHoursTabProps {
   isOpen: boolean;
@@ -38,6 +28,19 @@ const ModalCycleHoursTab: React.FC<ModalCycleHoursTabProps> = ({
   const [startLocation, setStartLocation] = useState<{ lat: number; lng: number } | null>(null);
   const [endLocation, setEndLocation] = useState<{ lat: number; lng: number } | null>(null);
   const [activeSelect, setActiveSelect] = useState<'start' | 'end' | null>(null);
+  const [logs, setLogs] = useState<Log[]>([]);
+
+  useEffect(()=> {
+    const mockLogs = [{
+      id: 1,
+      date: '2024-02-28',
+      driver_name: 'Thiago',
+      current_location: { lat: 200, lng: 200 },
+      pickup_location: { lat: 200, lng: 200 },
+      dropoff_location: { lat: 200, lng: 200 },
+    }];
+    setLogs(mockLogs);
+  }, [])
 
   // Calcular distância entre duas coordenadas
   const calculateDistance = (start: { lat: number; lng: number }, end: { lat: number; lng: number }): number => {
@@ -106,7 +109,7 @@ const ModalCycleHoursTab: React.FC<ModalCycleHoursTabProps> = ({
       const formattedFields: CycleHours = {
         id: Date.now(),
         log_id: 1,
-        status: fields.status,
+        status_id: fields.status,
         annotations: fields.annotations,
         start_location: startLocation!,
         end_location: endLocation!,
@@ -122,20 +125,32 @@ const ModalCycleHoursTab: React.FC<ModalCycleHoursTabProps> = ({
   return (
     <Form form={form} layout="vertical">
       <Form.Item
+        label="Log"
+        name="log_id"
+        rules={[{ required: true, message: 'Please, select a log!' }]}
+      >
+        <Select placeholder="Select status">
+          {logs.map((log: Log) => (
+          <Select.Option value={log.id}>{log.date} - {log.driver_name}</Select.Option>
+          ))}
+        </Select>
+      </Form.Item>
+
+      <Form.Item
         label="Status"
         name="status"
         rules={[{ required: true, message: 'Please, select a status!' }]}
       >
         <Select placeholder="Select status">
-          <Select.Option value="Off Duty">Off Duty</Select.Option>
-          <Select.Option value="Sleeper Berth">Sleeper Berth</Select.Option>
-          <Select.Option value="Driving">Driving</Select.Option>
-          <Select.Option value="On Duty Not Driving">On Duty Not Driving</Select.Option>
+          <Select.Option value={1}>Off Duty</Select.Option>
+          <Select.Option value={2}>Sleeper Berth</Select.Option>
+          <Select.Option value={3}>Driving</Select.Option>
+          <Select.Option value={4}>On Duty Not Driving</Select.Option>
         </Select>
       </Form.Item>
 
       <Form.Item label="Annotations" name="annotations">
-        <Input.TextArea placeholder="Additional notes (optional)" />
+        <Input.TextArea placeholder="Additional notes (optional)" style={{resize: 'none', height: '100px'}}/>
       </Form.Item>
 
       <Form.Item label="Start Location" name="start_location">
