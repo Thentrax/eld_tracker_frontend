@@ -16,7 +16,7 @@ const Home: React.FC = () => {
         <S.Slogan>
           The Easiest way to save your Logs
         </S.Slogan>
-        <Button title="Start saving now!" onClick={goToLogs} size="lg"/>
+        <Button title="See your logs now!" onClick={goToLogs} size="lg"/>
         <S.ImageRow>
           <S.Image src="/assets/orange-truck.png" alt="Orange Truck"/>
           <S.Image src="/assets/writing-in-paper.webp" alt="Writing in paper"/>

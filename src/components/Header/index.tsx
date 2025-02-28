@@ -2,11 +2,14 @@ import { LocalShipping } from '@mui/icons-material';
 import * as S from './styles'
 import Button from '../Button';
 import { useNavigate } from 'react-router-dom';
+import RegisterModal from '../RegisterModal';
+import { useState } from 'react';
 
 interface HeaderProps {
 }
 
 const Header: React.FC<HeaderProps> = () => {
+  const [openModal, setOpenModal] = useState<boolean>(false);
   const navigate = useNavigate();
 
   const goToHome = () => {
@@ -16,6 +19,14 @@ const Header: React.FC<HeaderProps> = () => {
   const goToLogs = () => {
     navigate('/logs');
   };
+
+  const handleOpenModal = () => {
+    setOpenModal(true)
+  }
+
+  const handleCloseModal = () => {
+    setOpenModal(false);
+  }
 
   return (
     <S.StyledHeader>
@@ -28,9 +39,10 @@ const Header: React.FC<HeaderProps> = () => {
           <S.NavContent onClick={goToLogs}>
             Logs
           </S.NavContent>
-          <Button title='New Register' onClick={() => console.log('/logs')}/>
+          <Button title='New Register' onClick={handleOpenModal} size='md'/>
         </S.NavContainer>
       </S.Row>
+      <RegisterModal onModalOpen={openModal} onClose={handleCloseModal}/>
     </S.StyledHeader>
   );
 };

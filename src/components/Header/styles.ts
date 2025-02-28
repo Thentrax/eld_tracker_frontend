@@ -30,7 +30,7 @@ export const Title = styled.div`
 `;
 
 export const Icon = styled.div`
-  font-size: 32px;
+  font-size: 36px;
   color: ${({ theme }) => theme.colors.primary};
 `;
 
