@@ -4,8 +4,8 @@ export interface Log {
   id: number;
   date: string;
   driver_name: string;
-  current_location: string;
-  pickup_location: string;
-  dropoff_location: string;
+  current_location: { lat: number; lng: number };
+  pickup_location: { lat: number; lng: number };
+  dropoff_location: { lat: number; lng: number };
   cycle_hours?: CycleHours[];
 }

@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useCallback } from 'react';
 import { Form, Input, DatePicker } from 'antd';
 import { MapContainer, TileLayer, Marker, useMapEvents } from 'react-leaflet';
 import { Log } from '../../../../Models/Log';
@@ -16,13 +16,11 @@ L.Icon.Default.mergeOptions({
 
 interface ModalLogTabProps {
   isOpen: boolean;
-  setTab: React.Dispatch<React.SetStateAction<"default" | "log" | "register">>;
   onClose: () => void;
 }
 
 const ModalLogTab: React.FC<ModalLogTabProps> = ({
   isOpen,
-  setTab,
   onClose,
 }) => {
   const [form] = Form.useForm();
