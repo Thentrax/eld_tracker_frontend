@@ -1,5 +1,5 @@
 import React, { useState, useCallback, useEffect } from 'react';
-import { Form, Input, Select } from 'antd';
+import { Form, Input, Select, TimePicker } from 'antd';
 import { MapContainer, TileLayer, Marker, useMapEvents } from 'react-leaflet';
 import Button from '../../../Button';
 import 'leaflet/dist/leaflet.css';
@@ -42,7 +42,6 @@ const ModalCycleHoursTab: React.FC<ModalCycleHoursTabProps> = ({
     setLogs(mockLogs);
   }, [])
 
-  // Calcular distância entre duas coordenadas
   const calculateDistance = (start: { lat: number; lng: number }, end: { lat: number; lng: number }): number => {
     const R = 6371;
     const dLat = (end.lat - start.lat) * (Math.PI / 180);
@@ -57,7 +56,6 @@ const ModalCycleHoursTab: React.FC<ModalCycleHoursTabProps> = ({
     return R * c;
   };
 
-  // Função para buscar o endereço formatado usando o utilitário
   const getFormattedAddress = useCallback(
     async (lat: number, lng: number, type: 'start' | 'end') => {
       try {
@@ -74,7 +72,6 @@ const ModalCycleHoursTab: React.FC<ModalCycleHoursTabProps> = ({
     [form]
   );
 
-  // Custom Hook para capturar a localização com Leaflet
   const LocationMarker = () => {
     useMapEvents({
       click(e: any) {
@@ -110,6 +107,8 @@ const ModalCycleHoursTab: React.FC<ModalCycleHoursTabProps> = ({
         id: Date.now(),
         log_id: 1,
         status_id: fields.status,
+        start_hour: fields.time_range[0].format('HH:mm'),
+        end_hour: fields.time_range[1].format('HH:mm'),
         annotations: fields.annotations,
         start_location: startLocation!,
         end_location: endLocation!,
@@ -147,6 +146,10 @@ const ModalCycleHoursTab: React.FC<ModalCycleHoursTabProps> = ({
           <Select.Option value={3}>Driving</Select.Option>
           <Select.Option value={4}>On Duty Not Driving</Select.Option>
         </Select>
+      </Form.Item>
+
+      <Form.Item label="Time Range" name="time_range" rules={[{ required: true, message: 'Please select the time range!' }]}> 
+        <TimePicker.RangePicker format="HH:mm" style={{ width: '100%' }} />
       </Form.Item>
 
       <Form.Item label="Annotations" name="annotations">
