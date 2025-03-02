@@ -7,7 +7,6 @@ import * as L from 'leaflet';
 import * as S from '../../styles';
 import { getAddress } from '../../../../Helpers/geoUtils';
 import { Log } from '../../../../Models/Log';
-import { CycleHours } from '../../../../Models/CycleHours';
 import { get, post } from '../../../../services/api';
 import { useNavigate } from 'react-router-dom';
 

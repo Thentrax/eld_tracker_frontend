@@ -1,7 +1,6 @@
 import React, { useState, useCallback } from 'react';
 import { Form, Input, DatePicker } from 'antd';
 import { MapContainer, TileLayer, Marker, useMapEvents } from 'react-leaflet';
-import { Log } from '../../../../Models/Log';
 import Button from '../../../Button';
 import 'leaflet/dist/leaflet.css';
 import * as L from 'leaflet';

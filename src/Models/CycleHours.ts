@@ -10,7 +10,9 @@ export interface CycleHours {
   annotations?: string;
 }
 
-//   OffDuty= 1,
-//   SleeperBerth= 2,
-//   Driving= 3,
-//   OnDutyNotDriving=4,
+export enum CycleStatus {
+  'Off Duty'= 1,
+  'Sleeper Berth'= 2,
+  'Driving'= 3,
+  'On Duty Not Driving'=4,
+}
