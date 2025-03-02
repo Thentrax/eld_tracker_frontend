@@ -1,11 +1,9 @@
-import { useEffect, useState } from "react";
 import * as S from "../styles"
 import { Log } from "../../../Models/Log";
 import { CycleHours, CycleStatus } from "../../../Models/CycleHours";
-import EldDiagram from "../../../components/ELD_Chart";
+import EldDiagram from "../../../components/ELD_Diagram";
 import { getTotalDistance } from "../../../Helpers/distanceUtils";
 import { getAvailableTime } from "../../../Helpers/dailyHoursUtils";
-import { getAddress } from "../../../Helpers/geoUtils";
 
 interface LogDetailProps {
   isOpen: boolean;
