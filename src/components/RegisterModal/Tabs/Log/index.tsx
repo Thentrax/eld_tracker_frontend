@@ -7,6 +7,8 @@ import 'leaflet/dist/leaflet.css';
 import * as L from 'leaflet';
 import * as S from '../../styles';
 import { getAddress } from '../../../../Helpers/geoUtils';
+import { post } from '../../../../services/api';
+import { useNavigate } from 'react-router-dom';
 
 L.Icon.Default.mergeOptions({
   iconRetinaUrl: require('leaflet/dist/images/marker-icon-2x.png'),
@@ -24,10 +26,11 @@ const ModalLogTab: React.FC<ModalLogTabProps> = ({
   onClose,
 }) => {
   const [form] = Form.useForm();
-  const [currentLocation, setCurrentLocation] = useState<{ lat: number; lng: number } | null>(null);
-  const [pickupLocation, setPickupLocation] = useState<{ lat: number; lng: number } | null>(null);
-  const [dropoffLocation, setDropoffLocation] = useState<{ lat: number; lng: number } | null>(null);
+  const [currentLocation, setCurrentLocation] = useState<{ lat: number; lng: number } | undefined>(undefined);
+  const [pickupLocation, setPickupLocation] = useState<{ lat: number; lng: number } | undefined>(undefined);
+  const [dropoffLocation, setDropoffLocation] = useState<{ lat: number; lng: number } | undefined>(undefined);
   const [activeSelect, setActiveSelect] = useState<'current' | 'pickup' | 'dropoff' | null>(null);
+  const navigate = useNavigate();
 
   const getFormattedAddress = useCallback(
     async (lat: number, lng: number, type: 'current' | 'pickup' | 'dropoff') => {
@@ -82,11 +85,14 @@ const ModalLogTab: React.FC<ModalLogTabProps> = ({
       const formattedFields = {
         date: fields.date.format('YYYY-MM-DD'),
         driver_name: fields.driver_name,
+        truck_number: fields.truck_number,
         current_location: currentLocation,
         pickup_location: pickupLocation,
         dropoff_location: dropoffLocation,
       }
-    
+      await post('logs/', formattedFields)
+      navigate('/logs')
+      onClose();
       console.log(formattedFields);
     } catch (error) {
       console.error('Validation Failed:', error);

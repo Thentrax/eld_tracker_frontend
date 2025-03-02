@@ -8,6 +8,8 @@ import * as S from '../../styles';
 import { getAddress } from '../../../../Helpers/geoUtils';
 import { Log } from '../../../../Models/Log';
 import { CycleHours } from '../../../../Models/CycleHours';
+import { get, post } from '../../../../services/api';
+import { useNavigate } from 'react-router-dom';
 
 L.Icon.Default.mergeOptions({
   iconRetinaUrl: require('leaflet/dist/images/marker-icon-2x.png'),
@@ -29,18 +31,54 @@ const ModalCycleHoursTab: React.FC<ModalCycleHoursTabProps> = ({
   const [endLocation, setEndLocation] = useState<{ lat: number; lng: number } | null>(null);
   const [activeSelect, setActiveSelect] = useState<'start' | 'end' | null>(null);
   const [logs, setLogs] = useState<Log[]>([]);
+  const [occupiedRanges, setOccupiedRanges] = useState<{ start: string; end: string }[]>([]);
+  const navigate = useNavigate();
 
-  useEffect(()=> {
-    const mockLogs = [{
-      id: 1,
-      date: '2024-02-28',
-      driver_name: 'Thiago',
-      current_location: { lat: 200, lng: 200 },
-      pickup_location: { lat: 200, lng: 200 },
-      dropoff_location: { lat: 200, lng: 200 },
-    }];
-    setLogs(mockLogs);
-  }, [])
+  useEffect(() => {  
+    fetchLogs();
+  }, []);
+
+  const fetchLogs = async () => {
+    try {
+      const response: Log[] = await get('/logs');
+      setLogs(response);
+    } catch (error) {
+      console.error('Log Fetch Error:', error);
+    }
+  };
+
+  const handleLogChange = (logId: number) => {
+    form.setFieldsValue({ log: logId });
+  
+    const selectedLog = logs.find(log => log.id === logId);
+    if (selectedLog && selectedLog.cycle_hours) {
+      setOccupiedRanges(
+        selectedLog.cycle_hours.map(ch => ({
+          start: ch.start_hour,
+          end: ch.end_hour
+        }))
+      );
+    }
+  };
+
+  const validateTimeRange = (_: any, value: any) => {
+    if (!value || value.length !== 2) return Promise.resolve();
+  
+    const selectedStart = value[0].format('HH:mm');
+    const selectedEnd = value[1].format('HH:mm');
+  
+    const conflict = occupiedRanges.find(({ start, end }) => 
+      (selectedStart >= start && selectedStart < end) || 
+      (selectedEnd > start && selectedEnd <= end) || 
+      (selectedStart <= start && selectedEnd >= end) 
+    );
+  
+    if (conflict) {
+      return Promise.reject(new Error(`Invalid period: there is a register between ${conflict.start} - ${conflict.end} in this log.`));
+    }
+  
+    return Promise.resolve();
+  }; 
 
   const calculateDistance = (start: { lat: number; lng: number }, end: { lat: number; lng: number }): number => {
     const R = 6371;
@@ -103,9 +141,8 @@ const ModalCycleHoursTab: React.FC<ModalCycleHoursTabProps> = ({
         ? calculateDistance(startLocation, endLocation)
         : 0;
 
-      const formattedFields: CycleHours = {
-        id: Date.now(),
-        log_id: 1,
+      const formattedFields = {
+        log: 1,
         status_id: fields.status,
         start_hour: fields.time_range[0].format('HH:mm'),
         end_hour: fields.time_range[1].format('HH:mm'),
@@ -114,8 +151,9 @@ const ModalCycleHoursTab: React.FC<ModalCycleHoursTabProps> = ({
         end_location: endLocation!,
         distance
       };
-
-      console.log(formattedFields);
+      await post('cycle_hours/', formattedFields);
+      navigate('/logs')
+      onClose();
     } catch (error) {
       console.error('Validation Failed:', error);
     }
@@ -128,7 +166,7 @@ const ModalCycleHoursTab: React.FC<ModalCycleHoursTabProps> = ({
         name="log_id"
         rules={[{ required: true, message: 'Please, select a log!' }]}
       >
-        <Select placeholder="Select status">
+        <Select placeholder="Select status" onChange={handleLogChange}>
           {logs.map((log: Log) => (
           <Select.Option value={log.id}>{log.date} - {log.driver_name}</Select.Option>
           ))}
@@ -148,7 +186,13 @@ const ModalCycleHoursTab: React.FC<ModalCycleHoursTabProps> = ({
         </Select>
       </Form.Item>
 
-      <Form.Item label="Time Range" name="time_range" rules={[{ required: true, message: 'Please select the time range!' }]}> 
+      <Form.Item
+        label="Time Range" name="time_range"
+        rules={[
+          { required: true, message: 'Please select an available time range!' },
+          { validator: validateTimeRange }
+        ]}
+      > 
         <TimePicker.RangePicker format="HH:mm" style={{ width: '100%' }} />
       </Form.Item>
 

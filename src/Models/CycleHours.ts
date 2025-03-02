@@ -1,6 +1,6 @@
 export interface CycleHours {
   id: number;
-  log_id: number
+  log: number
   status_id: number;
   start_hour: string;
   end_hour: string;
