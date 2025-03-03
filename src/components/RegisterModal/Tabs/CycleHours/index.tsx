@@ -141,7 +141,7 @@ const ModalCycleHoursTab: React.FC<ModalCycleHoursTabProps> = ({
         : 0;
 
       const formattedFields = {
-        log: 1,
+        log: fields.log_id,
         status_id: fields.status,
         start_hour: fields.time_range[0].format('HH:mm'),
         end_hour: fields.time_range[1].format('HH:mm'),
