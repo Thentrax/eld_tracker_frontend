@@ -15,7 +15,7 @@ const Skeleton: React.FC<SkeletonProps> = ({
     <Layout>
       <Header />
       <Content style={{ height: '90vh'}}>
-        <S.Container>
+        <S.Container style={{ overflow: 'auto' }}>
           {children}
         </S.Container>
       </Content>
