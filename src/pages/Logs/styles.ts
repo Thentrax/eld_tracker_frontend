@@ -81,6 +81,7 @@ export const CycleHoursCard = styled.div`
   padding: 12px;
   align-items: center;
   border: 1px solid ${({theme}) => theme.colors.text};
+  border-radius: 12px;
 `;
 
 export const CycleHoursRow = styled.div`

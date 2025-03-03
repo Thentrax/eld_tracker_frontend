@@ -7,15 +7,20 @@ import { get } from "../../services/api";
 import LogDetail from "./Detail";
 import { getTotalDistance } from "../../Helpers/distanceUtils";
 import { getAvailableTime } from "../../Helpers/dailyHoursUtils";
+import { useModal } from "../../context/ModalContext/provider";
 
 const Logs: React.FC = () => {
+  const { isOpen } = useModal();
   const [logs, setLogs] = useState<Log[]>([]);
   const [selectedLog, setSelectedLog] = useState<Log>();
   const [openDetails, setOpenDetails] = useState<boolean>(false);
 
   useEffect(() => {  
-    fetchLogs();
-  }, []);
+    if(!isOpen){
+      fetchLogs();
+      handleReturn();
+    }
+  }, [isOpen]);
 
   const fetchLogs = async () => {
     try {

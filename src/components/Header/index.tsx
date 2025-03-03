@@ -3,13 +3,13 @@ import * as S from './styles'
 import Button from '../Button';
 import { useNavigate } from 'react-router-dom';
 import RegisterModal from '../RegisterModal';
-import { useState } from 'react';
+import { useModal } from '../../context/ModalContext/provider';
 
 interface HeaderProps {
 }
 
 const Header: React.FC<HeaderProps> = () => {
-  const [openModal, setOpenModal] = useState<boolean>(false);
+  const { isOpen, openModal, closeModal} = useModal();
   const navigate = useNavigate();
 
   const goToHome = () => {
@@ -19,14 +19,6 @@ const Header: React.FC<HeaderProps> = () => {
   const goToLogs = () => {
     navigate('/logs');
   };
-
-  const handleOpenModal = () => {
-    setOpenModal(true)
-  }
-
-  const handleCloseModal = () => {
-    setOpenModal(false);
-  }
 
   return (
     <S.StyledHeader>
@@ -39,10 +31,10 @@ const Header: React.FC<HeaderProps> = () => {
           <S.NavContent onClick={goToLogs}>
             Logs
           </S.NavContent>
-          <Button title='New Register' onClick={handleOpenModal} size='md'/>
+          <Button title='New Register' onClick={openModal} size='md'/>
         </S.NavContainer>
       </S.Row>
-      <RegisterModal onModalOpen={openModal} onClose={handleCloseModal}/>
+      <RegisterModal onModalOpen={isOpen} onClose={closeModal}/>
     </S.StyledHeader>
   );
 };

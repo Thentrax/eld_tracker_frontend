@@ -16,6 +16,10 @@ interface LogDetailProps {
 const LogDetail: React.FC<LogDetailProps> = ({
   isOpen, selectedLog, onReturn
 }) => {
+  const sortCycleHoursByStartTime = (cycleHours: CycleHours[]) => {
+    return [...cycleHours].sort((a, b) => a.start_hour.localeCompare(b.start_hour));
+  };
+
   return (
     <S.Container>
       {selectedLog && (
@@ -34,7 +38,7 @@ const LogDetail: React.FC<LogDetailProps> = ({
             <EldDiagram log={selectedLog} />
           </div>
           <S.Col>
-            {selectedLog.cycle_hours && selectedLog.cycle_hours.map((cycleHour: CycleHours) => 
+            {selectedLog.cycle_hours && sortCycleHoursByStartTime(selectedLog.cycle_hours).map((cycleHour: CycleHours) => 
               (
                 <CycleHoursCard cycleHour={cycleHour} />
               )
