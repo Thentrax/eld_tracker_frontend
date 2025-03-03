@@ -1,9 +1,11 @@
 import * as S from "../styles"
 import { Log } from "../../../Models/Log";
-import { CycleHours, CycleStatus } from "../../../Models/CycleHours";
+import { CycleHours } from "../../../Models/CycleHours";
 import EldDiagram from "../../../components/ELD_Diagram";
 import { getTotalDistance } from "../../../Helpers/distanceUtils";
 import { getAvailableTime } from "../../../Helpers/dailyHoursUtils";
+import DetailInfoCard from "./Components/DetailInfoCard";
+import CycleHoursCard from "./Components/CycleHourCard";
 
 interface LogDetailProps {
   isOpen: boolean;
@@ -22,27 +24,22 @@ const LogDetail: React.FC<LogDetailProps> = ({
             {`${selectedLog.date} - ${selectedLog.driver_name}`}
           </S.Title>
           <S.FixedRow>
-          <S.Col>
-            <S.Text><b>Total Distance:</b> {getTotalDistance(selectedLog).toFixed(2)}Km</S.Text>
-            <S.Text><b>Time left to fill:</b> {getAvailableTime(selectedLog)}</S.Text>
-          </S.Col>
-          <S.Col>
-            <S.Text><b>Time left to fill:</b> {getAvailableTime(selectedLog)}</S.Text>
-            <S.Text><b>Time left to fill:</b> {getAvailableTime(selectedLog)}</S.Text>
-          </S.Col>
+            <DetailInfoCard title="Truck Number" value={selectedLog.truck_number} />
+            <DetailInfoCard title="Total Distance" value={`${getTotalDistance(selectedLog).toFixed(2)}Km`} />
+            <DetailInfoCard title="Pickup Location" value={selectedLog.pickup_location_address} />
+            <DetailInfoCard title="Dropoff Location" value={selectedLog.dropoff_location_address} />
+            <DetailInfoCard title="Time left to fill" value={getAvailableTime(selectedLog)} />
           </S.FixedRow>
-          <div style={{ width: '100%'}}>
+          <div style={{ display: 'flex'}}>
             <EldDiagram log={selectedLog} />
           </div>
-          <S.Row>
+          <S.Col>
             {selectedLog.cycle_hours && selectedLog.cycle_hours.map((cycleHour: CycleHours) => 
               (
-                <>
-                {CycleStatus[cycleHour.status_id]}
-                </>
+                <CycleHoursCard cycleHour={cycleHour} />
               )
             )}
-          </S.Row>
+          </S.Col>
         </>
       )}
     </S.Container>

@@ -86,8 +86,11 @@ const ModalLogTab: React.FC<ModalLogTabProps> = ({
         driver_name: fields.driver_name,
         truck_number: fields.truck_number,
         current_location: currentLocation,
+        current_location_address: fields.current_location,
         pickup_location: pickupLocation,
+        pickup_location_address: fields.pickup_location,
         dropoff_location: dropoffLocation,
+        dropoff_location_address: fields.dropoff_location,
       }
       await post('logs/', formattedFields)
       navigate('/logs')

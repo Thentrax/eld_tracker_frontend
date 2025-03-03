@@ -147,7 +147,9 @@ const ModalCycleHoursTab: React.FC<ModalCycleHoursTabProps> = ({
         end_hour: fields.time_range[1].format('HH:mm'),
         annotations: fields.annotations,
         start_location: startLocation!,
+        start_location_address: fields.start_location,
         end_location: endLocation!,
+        end_location_address: fields.end_location,
         distance
       };
       await post('cycle_hours/', formattedFields);
